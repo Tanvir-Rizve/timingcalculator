@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reg-to-Reg Path with Buffers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #90c5e4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+
+
+        .container_up {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .box_up {
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 15px;
+      width: 80%; /* Adjusted width */
+      max-width: 800px; /* Set a max-width */
+      background-color: #fff;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 8px; /* Rounded corners */
+    }
+
+    label_up {
+      display: block;
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    input[type="number"] {
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 120px; /* Fixed width for input fields */
+    }
+
+    button {
+      background-color: #b8431f;
+      color: white;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+    .output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+
+
+
+
+
+        
+        .register {
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            background-color: #fff;
+            width: 120px;  /* Adjusted width */
+            height: 160px; /* Adjusted height */
+            display: inline-block;
+            text-align: center;
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .pin {
+            font-size: 12px;
+            position: absolute;
+            font-weight: bold;
+            color: #333;
+        }
+        .pin.q {
+            top: 10px;
+            right: -20px;
+        }
+        .pin.d {
+            top: 10px;
+            left: -20px;
+        }
+        .pin.clk {
+            bottom: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .logic {
+            background: #FF9800;
+            border-radius: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            height: 100px;
+            margin: 10px;
+            position: relative;
+            text-align: center;
+            width: 150px;
+        }
+        .logic::before,
+        .logic::after {
+            background: #FF9800;
+            border-radius: 50%;
+            content: '';
+            height: 100px;
+            position: absolute;
+            width: 100px;
+        }
+        .logic::before {
+            top: -50px;
+            left: 30px;
+        }
+        .logic::after {
+            bottom: -50px;
+            right: 30px;
+        }
+        .logic-text {
+            position: relative;
+            top: 30px;
+        }
+        .input-container {
+            position: absolute;
+            top: -40px; /* Adjust position to be above the logic block */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .input-container-right {
+            position: absolute;
+            right: 10px; /* Adjust position to be above the logic block */
+            bottom: -70px;
+            left: 20%;
+            transform: translateX(-50%);
+            z-index: 1;
+          }
+        .input-container-center {
+            position: absolute;
+            right: 20px; /* Adjust position to be above the logic block */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+             }
+        .input-container-button {
+            position: absolute;
+            top: 600px; /* Adjust position to be above the logic block */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .input-container-button label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            font-size:large;
+        }
+        .input-container-button input {
+            padding: 100px;
+            font-size: 14px;
+            border: 1px solid #e20202;
+            border-radius: 40px;
+            width: 500px;
+            text-align: center;
+        }
+
+
+
+        .input-container-lib {
+            position: absolute;
+            right: 100px; /* Adjust position to be above the logic block */
+            bottom:-20px;
+            left: 100%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .input-container-lib label {
+            font-weight:normal;
+            color: #333;
+            margin-bottom: 5px;
+            font-size:large;
+        }
+        .input-container-lib input {
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #e20202;
+            border-radius: 4px;
+            width: 50px;
+            text-align: center;
+        }
+
+
+
+        .input-container label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            font-size:medium;
+        
+        
+        }
+        .input-container input {
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #e20202;
+            border-radius: 4px;
+            width: 50px;
+            text-align: center;
+        }
+        .input-container-right input {
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 50px;
+            text-align: center;
+        }
+        .input-container-right label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: small;
+        }
+        .input-container-center input {
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 50px;
+            text-align: center;
+        }
+        .input-container-center label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: small;
+        }
+        .path {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 100px;
+        }
+        .arrow {
+            width: 100px;
+            height: 2px;
+            background-color: #333;
+            position: relative;
+            margin: 0 10px;
+        }
+        .arrow::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #333;
+            position: absolute;
+            top: -5px;
+            right: -10px;
+        }
+        .right-arrow {
+            width: 100px;
+            height: 2px;
+            background-color: #333;
+            position: relative;
+            margin: 0 10px;
+        }
+        .right-arrow::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 5px solid #333;
+            position: absolute;
+            top: -4px;
+            right: -5px;
+        }
+        .clock {
+            position: relative;
+            width: 2px;
+            height: 0px;
+            background-color: #333;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 40px;
+        }
+        .clock_first {
+            position: relative;
+            width: 2px;
+            height: 100px;
+            background-color: #000000;
+            left: 0%;
+            transform: translateX(-50%);
+            margin-bottom: 100px;
+            bottom: 20px;
+            text-align: start;
+        }
+        .clock-line {
+            position: absolute;
+            width: calc(100% - 165px); /* Adjusted to fit within the path */
+            height: 2px;
+            background-color: #333;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .clock-label {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: #333;
+        }
+        .clock-arrow {
+            width: 2px;
+            height: 105px;
+            background-color: #333;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .clock-arrow.reg1 {
+            top: 140px;
+        }
+        .clock-arrow.reg2 {
+            top: 140px;
+        }
+        .clock-arrow::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid #333;
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .buffer {
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 30px solid #ffffff;
+            display: inline-block;
+            position: absolute;
+            font-weight: bold;
+            color: #050505;
+            text-align: center;
+            line-height: 20px;
+        }
+        .buffer.reg1 {
+            bottom:-10%;
+            left: calc(10% - 23px); /* Positioned below Reg1 */
+        }
+        .buffer.reg2 {
+            bottom: -10%;
+            left: calc(86% - 5px); /* Positioned below Reg2 */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="box">
+          <label for="period_value">
+            create_clock -name main_clk -period  
+            <input type="number" id="period_value" placeholder="Period">
+            -waveform { <output id="duty_cycle">0</output> }
+            [ get_port main_clk ]
+          </label>
+        </div>
+    
+        <div class="box">
+          <label for="clk_uncert_setup">
+            set_clock_uncertainty -setup 
+            <input type="number" id="clk_uncert_setup" placeholder="Setup">
+            [get_clocks main_clk]
+          </label>
+        </div>
+    
+        <div class="box">
+          <label for="clk_uncert_hold">
+            set_clock_uncertainty -hold 
+            <input type="number" id="clk_uncert_hold" placeholder="Hold">
+            [get_clocks main_clk]
+          </label>
+        </div>
+    
+        <div class="box">
+          <label for="derate_early">
+            set_timing_derate -early 
+            <input type="number" id="derate_early" placeholder="Early">
+            -cell_delay
+          </label>
+        </div>
+    
+        <div class="box">
+          <label for="derate_late">
+            set_timing_derate -late 
+            <input type="number" id="derate_late" placeholder="Late">
+            -cell_delay
+          </label>
+        </div>
+    </div>
+
+
+
+<h1>Reg-to-Reg Path Slack Calculation</h1>
+<div class="path">
+    <div class="register">
+        Reg1
+        <div class="pin q">Q</div>
+        <div class="pin d">D</div>
+        <div class="clock">
+            <div class="clock-arrow reg1"></div>
+            <div class="pin clk">Clk</div>
+        </div>
+
+        <div class="input-container-center">
+            <label for="cq_delay1">Clk-Q</label>
+            <input type="number" id="cq_delay1" placeholder="Value">
+        </div>
+
+        <div class="input-container-lib">
+            <label for="reg1_hold">Library Hold Time:</label>
+            <input type="number" id="reg1_hold" placeholder="Value">
+        </div>
+
+
+    </div>
+    <div class="buffer reg1">BUF1
+
+        <div class="input-container-right">
+            <label for="buff1_delay"></label>
+            <input type="number" id="buff1_delay" placeholder="delay">
+        </div>
+
+    </div> <!-- Buffer below Reg1 -->
+    <div class="right-arrow"></div>
+    <div class="logic">
+        <div class="input-container">
+            <label for="logic_delay">Logic Delay</label>
+            <input type="number" id="logic_delay" placeholder="Value">
+        </div>
+        <div class="logic-text">Combinational Logic</div>
+    </div>
+    <div class="right-arrow"></div>
+    <div class="buffer reg2">BUF2
+
+        <div class="input-container-right">
+            <label for="buff2_delay"></label>
+            <input type="number" id="buff2_delay" placeholder="delay">
+        </div>
+
+    </div> <!-- Buffer below Reg2 -->
+    <div class="register">
+        Reg2
+        <div class="pin q">Q</div>
+        <div class="pin d">D</div>
+        <div class="clock">
+            <div class="clock-arrow reg2"></div>
+            <div class="pin clk">Clk</div>
+        </div>
+
+
+        <div class="input-container-center">
+            <label for="cq_delay2">Clk-Q</label>
+            <input type="number" id="cq_delay2" placeholder="Value">
+        </div>
+
+        <div class="input-container-lib">
+            <label for="reg2_setup">Library Setup Time:</label>
+            <input type="number" id="reg2_setup" placeholder="Value">
+        </div>
+
+
+    </div>
+    <div class="clock-line"></div>
+</div>
+
+<div class="clock_first"> Clk </div>
+
+<!-- Optional: Button to trigger calculations -->
+ 
+
+
+<button onclick="performCalculations()">Calculate</button>
+<div class="box" id="setup_slack">
+  slack: 
+</div>
+
+
+<script>
+    function performCalculations() {
+        const logicDelay =parseFloat( document.getElementById("logic_delay").value);
+        const cqDelay1 = parseFloat(document.getElementById("cq_delay1").value);
+        const cqDelay2 = parseFloat(document.getElementById("cq_delay2").value);
+        const buffDelay1 = parseFloat(document.getElementById("buff1_delay").value);
+        const buffDelay2 = parseFloat(document.getElementById("buff2_delay").value);
+        const periodValue = parseFloat(document.getElementById("period_value").value);
+        const setupUncertainty = parseFloat(document.getElementById("clk_uncert_setup").value);
+        const holdUncertainty = parseFloat(document.getElementById("clk_uncert_hold").value);
+        const earlyDerate = parseFloat(document.getElementById("derate_early").value);
+        const lateDerate = parseFloat(document.getElementById("derate_late").value);
+        const libSetup = parseFloat(document.getElementById("reg2_setup").value);
+        const libHold = parseFloat(document.getElementById("reg1_hold").value);
+        
+        const d_cycle = periodValue/ 2;
+        document.getElementById("duty_cycle").textContent = "0  " + d_cycle;
+
+        
+        const dpath_delay = buffDelay1 + cqDelay1 + logicDelay - libSetup;
+        const capturePath = buffDelay2 * earlyDerate;
+
+        const arrival    = dpath_delay * lateDerate;
+        const required  = periodValue  + capturePath - setupUncertainty;
+        const setupSlack = required - arrival;
+
+        document.getElementById("setup_slack").textContent = "setup Slack: " + setupSlack;
+
+       
+        
+    }
+</script>
+
+</body>
+</html>
