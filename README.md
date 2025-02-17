@@ -7,7 +7,7 @@ set_clock_uncertainty -hold 0.2 [get_clocks main_clk]
 set_timing_derate -early 0.95 -cell_delay
 set_timing_derate -late 1.05 -cell_delay
 
-Clk-Q is the clock to Q delay of a flip-flop
+Clk-Q is the clk to Q delay of a flip-flop
 
 Enter the values into the corresponding fields and explore the tool.
 
